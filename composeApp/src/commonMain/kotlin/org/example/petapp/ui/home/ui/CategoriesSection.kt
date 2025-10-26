@@ -1,8 +1,12 @@
+// video 4 | 5
+
 package org.example.petapp.ui.home.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +18,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +32,6 @@ import org.example.petapp.theme.roundedCornerShape100
 import org.jetbrains.compose.resources.painterResource
 import petappproject.composeapp.generated.resources.Res
 import petappproject.composeapp.generated.resources.bсе
-import petappproject.composeapp.generated.resources.dog
 import kotlin.collections.listOf
 
 @Composable
@@ -36,18 +40,26 @@ fun CategoriesSection() {
     val categoriesList = remember {
         listOf("All", "Cat", "Dog")
     }
+    var selectedIndex by remember {
+        mutableStateOf(0)
+    }
     LazyRow(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
     ) {
         itemsIndexed(categoriesList) { index, item ->
-            CategoryItem(item)
+            CategoryItem(selectedIndex, isSelected = index == selectedIndex)
         }
     }
 }
 
 @Composable
-fun CategoryItem(item: String) {
+fun CategoryItem(item: String, isSelected: Boolean, onClick:() -> Unit) {
+
+    val backgroundColor = animateColorAsState(
+        if (isSelected) Color.Black.copy(alpha = 0.08F) else Color.White
+
+    )
     Row(
         Modifier
             .height(52.dp)
@@ -59,7 +71,10 @@ fun CategoryItem(item: String) {
             )
             .clip(roundedCornerShape100)
             .padding(10.dp)
-            .padding(end = 14.dp),
+            .padding(end = 14.dp)
+            .clickable {
+                onClick()
+            },
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
